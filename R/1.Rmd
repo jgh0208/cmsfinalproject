@@ -1,0 +1,299 @@
+---
+title: "Untitled"
+author: "20173250 ��????"
+date: "2019?? 6?? 1??"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+dat <- read.csv("C:/Users/7533/Desktop/dat2.csv")
+dat <- dat[, 2:22]
+str(dat)
+dat <- na.omit(dat)
+dat[ ,3] <- factor(dat[ ,3])
+dat[ ,10] <- factor(dat[ ,10])
+dat[ ,11] <- factor(dat[ ,11])
+dat[ ,13] <- factor(dat[ ,13])
+dat[ ,14] <- factor(dat[ ,14])
+dat[ ,15] <- factor(dat[ ,15])
+dat[ ,16] <- factor(dat[ ,16])
+dat[ ,17] <- factor(dat[ ,17])
+dat[ ,18] <- factor(dat[ ,18])
+dat[ ,19] <- factor(dat[ ,19])
+dat[ ,20] <- factor(dat[ ,20])
+dat[ ,21] <- factor(dat[ ,21])
+
+
+
+
+
+dat[,c(3,10,11,13:21)] <- factor(dat[ ,c(3,10,11,13:21)])
+
+table(dat$DH2_dg)
+
+
+library(moonBook)
+mytable(DH2_dg~, data = dat)
+
+
+fit <- glm(DH2_dg~., data = dat, family = "binomial")
+summary(fit)
+fit2 <- step(fit)
+summary(fit2)
+
+chisq.test(table(dat$DH2_dg,dat$sex))
+t.test(dat$DH2_dg,dat$age)
+t.test(dat$DH2_dg,dat$occp)
+t.test(dat$DH2_dg,dat$HE_ht)
+t.test(dat$DH2_dg,dat$HE_wt)
+t.test(dat$DH2_dg,dat$HE_wc)
+t.test(dat$DH2_dg,dat$HE_chol)
+t.test(dat$DH2_dg,dat$HE_glu)
+t.test(dat$DH2_dg,dat$HE_fst)
+chisq.test(table(dat$DH2_dg,dat$HE_HPdg))
+chisq.test(table(dat$DH2_dg,dat$HE_HLfh1))
+t.test(dat$DH2_dg,dat$HE_BMI)
+chisq.test(table(dat$DH2_dg,dat$DI1_dg))
+chisq.test(table(dat$DH2_dg,dat$DJ6_dg))
+chisq.test(table(dat$DH2_dg,dat$DJ8_dg))
+chisq.test(table(dat$DH2_dg,dat$DH4_dg))
+chisq.test(table(dat$DH2_dg,dat$HE_DMdg))
+chisq.test(table(dat$DH2_dg,dat$DF2_dg))
+chisq.test(table(dat$DH2_dg,dat$DH2_dg))
+chisq.test(table(dat$DH2_dg,dat$DM4_dg))
+
+
+fit <- glm(DH2_dg~., data = dat, family = "binomial")
+summary(fit)
+fit2 <- step(fit)
+summary(fit2)
+exp(0.234999)#성별
+exp(0.120010)#나이
+exp(-0.003315)#콜레스테롤
+exp(0.030126)#공복시간
+exp(-0.022175)#고지혈증
+exp(0.266871)#고혈압진단여부
+exp(0.431717)#축농증진단여부
+exp(0.441965)#당뇨병
+exp(0.641204)#우울증
+exp( 0.566435)#골다공증
+
+library(pROC)
+r1 <- roc(DH2_dg~sex,data = dat)
+a1 <- round(auc(r1),digits = 4)
+
+r2 <- roc(DH2_dg~age,data = dat)
+a2 <- round(auc(r2),digits = 4)
+
+r3 <- roc(DH2_dg~HE_chol,data = dat)
+a3 <- round(auc(r3),digits = 4)
+
+r4 <- roc(DH2_dg~DI1_dg,data = dat)
+a4 <- round(auc(r4),digits = 4)
+
+r5 <- roc(DH2_dg~DJ6_dg,data = dat)
+a5 <- round(auc(r5),digits = 4)
+
+r6 <- roc(DH2_dg~HE_DMdg,data = dat)
+a6 <- round(auc(r6),digits = 4)
+
+r7 <- roc(DH2_dg~DF2_dg,data = dat)
+a7 <- round(auc(r7),digits = 4)
+
+r8 <- roc(DH2_dg~DM4_dg,data = dat)
+a8 <- round(auc(r8),digits = 4)
+
+r9 <- roc(DH2_dg~HE_fst,data = dat)
+a9 <- round(auc(r9),digits = 4)
+
+r10 <- roc(DH2_dg~HE_HLfh1,data = dat)
+a10 <- round(auc(r10),digits = 4)
+
+plot(r1)
+plot(r2,col="red",add=T)
+plot(r3,col="orange",add=T)
+plot(r4,col="yellow",add=T)
+plot(r5,col="green",add=T)
+plot(r6,col="blue",add=T)
+plot(r7,col="purple",add=T)
+plot(r8,col="pink",add=T)
+plot(r9,col="darkgreen",add=T)
+plot(r10,col="skyblue",add=T)
+legend("bottomright",
+       c("sex(AUC=0.5357)","age(AUC=0.8878)",
+         "HE_chol(AUC=0.5627)","DI1_dg(AUC= 0.6855)",
+         "DJ6_dg(AUC=0.5025)","HE_DMdg(AUC=0.6003)",
+         "DF2_dg(AUC=0.5272)","DM4_dg(AUC=0.6167)",
+         "HE_fst(AUC=0.5622)","HE_HLfh1(AUC=0.5368)"),
+       lty = 1,lwd = 3,
+       col = c("black","red","orange","yellow","green",
+               "blue","purple","pink","darkgreen","skyblue"))
+
+#모든 진단여부를 O로 놓고 데이터중 성별은 여자로 나이의 최대값과 콜레스테롤 수치의 최솟값을 넣어주니 확률이 가장 크게나타났다.  
+predict(fit2,
+        newdata = list(sex=1,age=80,HE_fst =27,
+                       HE_chol=74,DI1_dg=1,DJ6_dg=1,
+                       HE_HLfh1=0,HE_DMdg=1,DF2_dg=1,DM4_dg=1),
+        type = "response")
+#모든질병의 진단여부를 X로 놓고 나이를 최솟값으로 콜레스테롤수치를 최대값으로 성별은 남으로 놨을떄ㅐ 확률이 최소로 나왔다. 
+predict(fit2,
+        newdata = list(sex=0,age=19,HE_chol=482,HE_fst =0,
+                       HE_HLfh1=1,HE_chol=74,DI1_dg=0,DJ6_dg=0,
+                       HE_DMdg=0,DF2_dg=0,DM4_dg=0),
+        type = "response")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+dat2 <- data.frame(dat$DH2_dg,dat$sex,dat$age,dat$HE_chol,dat$DI1_dg,
+                   dat$DJ6_dg,dat$HE_DMdg,dat$DF2_dg,dat$DM4_dg)
+colnames(dat2) <- c("DH2_dg","sex","age","HE_chol","DI1_dg","DJ6_dg","HE_DMdg","DF2_dg","DM4_dg")
+
+#fit3 <- glm(formula = DH2_dg ~ sex + age + HE_chol + DI1_dg + 
+ #            DJ6_dg + HE_DMdg + DF2_dg + DM4_dg, 
+  #          family = "binomial", 
+   #         data = dat2)#DH2_dg ~ sex + age + HE_chol + DI1_dg + DJ6_dg +HE_DMdg + DF2_dg + DM4_dg
+#fit3 <- glm(formula = DH2_dg~., 
+#            family = "binomial", 
+#            data = dat2)
+#fit4 <- step(fit3)
+#summary(fit4)
+
+#mytable(DH2_dg~., data = dat2)
+fit4$coefficients
+exp(fit4$coefficients)
+exp(0.238621614)#성별
+exp(0.119345099)#나이
+exp(-0.003224921)#총 콜레스테롤
+exp(0.267817269)#고혈압진단여부
+exp(0.428415620)#축농증진단여부
+exp(0.429462114)#당뇨병진단여부
+exp(0.632332664)#우울증진단여부
+exp(0.565031186)#골다공증진단여부 
+#install.packages("pROC")
+library(pROC)
+r1 <- roc(DH2_dg~sex,data = dat)
+a1 <- round(auc(r1),digits = 4)
+
+r2 <- roc(DH2_dg~age,data = dat)
+a2 <- round(auc(r2),digits = 4)
+
+r3 <- roc(DH2_dg~HE_chol,data = dat)
+a3 <- round(auc(r3),digits = 4)
+
+r4 <- roc(DH2_dg~DI1_dg,data = dat)
+a4 <- round(auc(r4),digits = 4)
+
+r5 <- roc(DH2_dg~DJ6_dg,data = dat)
+a5 <- round(auc(r5),digits = 4)
+
+r6 <- roc(DH2_dg~HE_DMdg,data = dat)
+a6 <- round(auc(r6),digits = 4)
+
+r7 <- roc(DH2_dg~DF2_dg,data = dat)
+a7 <- round(auc(r7),digits = 4)
+
+r8 <- roc(DH2_dg~DM4_dg,data = dat)
+a8 <- round(auc(r8),digits = 4)
+
+plot(r1)
+plot(r2,col="red",add=T)
+plot(r3,col="orange",add=T)
+plot(r4,col="yellow",add=T)
+plot(r5,col="green",add=T)
+plot(r6,col="blue",add=T)
+plot(r7,col="purple",add=T)
+plot(r8,col="pink",add=T)
+legend("bottomright",
+       c("sex(AUC=0.5357)","age(AUC=0.8878)",
+         "HE_chol(AUC=0.5627)","DI1_dg(AUC= 0.6855)",
+         "DJ6_dg(AUC=0.5025)","HE_DMdg(AUC=0.6003)",
+         "DF2_dg(AUC=0.5272)","DM4_dg(AUC=0.6167)"),
+       lty = 1,lwd = 3,
+       col = c("black","red","orange","yellow","green",
+               "blue","purple","pink"))
+#text(locator(1),paste("sex AUC:",a1))
+#text(locator(1),paste("age AUC:",a2))
+#text(locator(1),paste("HE_chol AUC:",a3))
+#text(locator(1),paste("DI1_dg AUC:",a4))
+#text(locator(1),paste("DJ6_dg AUC:",a5))
+#text(locator(1),paste("HE_DMdg  AUC:",a6))
+#text(locator(1),paste("DF2_dg AUC:",a7))
+#text(locator(1),paste("DM4_dg AUC:",a8))
+#성별이 남자,나이가 55,총콜레스테롤수치 200,고혈압의사진단여부 있음,
+#축농증 없음,당뇨병없음,우울증 없음,골다공증의사진단없ㅇ
+predict(fit3,
+        newdata = list(sex=0,age=55,HE_chol=200,DI1_dg=1,DJ6_dg=0,
+                       HE_DMdg=0,DF2_dg=0,DM4_dg=0),
+        type = "response")
+#골다공증 진단여부를 O로 바꿨더니 확률이 2배가 됨 
+predict(fit3,
+        newdata = list(sex=0,age=55,HE_chol=200,DI1_dg=1,DJ6_dg=0,
+                       HE_DMdg=0,DF2_dg=0,DM4_dg=1),
+        type = "response")
+
+#성별이 여자,나이가 76,총콜레스테롤수치 300,고혈압의사진단여부 있음,
+#축농증 있음,당뇨병 있음,우울증 있음,골다공증의사진단있음
+predict(fit3,
+        newdata = list(sex=1,age=76,HE_chol=300,DI1_dg=1,DJ6_dg=0,
+                       HE_DMdg=1,DF2_dg=1,DM4_dg=1),
+        type = "response")
+
+#콜레스테롤 수치를 낯춰주었더니 확률이 더 높아짐 
+predict(fit3,
+        newdata = list(sex=1,age=76,HE_chol=170,DI1_dg=1,DJ6_dg=0,
+                       HE_DMdg=1,DF2_dg=1,DM4_dg=1),
+        type = "response")
+
+#콜레스테롤 수치를 올려주었더니 낮아짐
+predict(fit3,
+        newdata = list(sex=1,age=76,HE_chol=400,DI1_dg=1,DJ6_dg=0,
+                       HE_DMdg=1,DF2_dg=1,DM4_dg=1),
+        type = "response")
+
+#축농증지단여부를 O로 바꿔주었더니확률이 높아짐  
+predict(fit3,
+        newdata = list(sex=1,age=76,HE_chol=300,DI1_dg=1,DJ6_dg=1,
+                       HE_DMdg=1,DF2_dg=1,DM4_dg=1),
+        type = "response")
+#모든 진단여부를 O로 놓고 데이터중 성별은 여자로 나이의 최대값과 콜레스테롤 수치의 최솟값을 넣어주니 확률이 가장 크게나타났다.  
+predict(fit3,
+        newdata = list(sex=1,age=80,HE_chol=74,DI1_dg=1,DJ6_dg=1,
+                       HE_DMdg=1,DF2_dg=1,DM4_dg=1),
+        type = "response")
+#모든질병의 진단여부를 X로 놓고 나이를 최솟값으로 콜레스테롤수치를 최대값으로 성별은 남으로 놨을떄ㅐ 확률이 최소로 나왔다. 
+predict(fit3,
+        newdata = list(sex=0,age=19,HE_chol=482,DI1_dg=0,DJ6_dg=0,
+                       HE_DMdg=0,DF2_dg=0,DM4_dg=0),
+        type = "response")
+
+```
+

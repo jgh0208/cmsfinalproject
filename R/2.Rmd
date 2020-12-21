@@ -1,0 +1,125 @@
+---
+title: "sub"
+author: "20173250 정경현"
+date: "2019년 6월 8일"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+dat <- read.csv("C:/Users/7533/Desktop/dat2.csv")
+dat <- dat[, 2:22]
+str(dat)
+dat <- na.omit(dat)
+dat[ ,3] <- factor(dat[ ,3])
+dat[ ,10] <- factor(dat[ ,10])
+dat[ ,11] <- factor(dat[ ,11])
+dat[ ,13] <- factor(dat[ ,13])
+dat[ ,14] <- factor(dat[ ,14])
+dat[ ,15] <- factor(dat[ ,15])
+dat[ ,16] <- factor(dat[ ,16])
+dat[ ,17] <- factor(dat[ ,17])
+dat[ ,18] <- factor(dat[ ,18])
+dat[ ,19] <- factor(dat[ ,19])
+dat[ ,20] <- factor(dat[ ,20])
+dat[ ,21] <- factor(dat[ ,21])
+
+
+
+
+
+dat[,c(3,10,11,13:21)] <- factor(dat[ ,c(3,10,11,13:21)])
+
+table(dat$DH2_dg)
+
+
+library(moonBook)
+mytable(DH2_dg~, data = dat)
+
+
+fit <- glm(DH2_dg~., data = dat, family = "binomial")
+summary(fit)
+fit2 <- step(fit)
+summary(fit2)
+
+#install.packages("pROC")
+library(pROC)
+
+
+
+##시각화 
+
+boxplot(dat$age~dat$DH2_dg,
+        col=c("#F5E262","#6CCD58"),
+        main = "백내장진단유무별 나이분포",
+        xlab = "백내장 진단유무",
+        ylab = "나이")
+
+boxplot(dat$HE_ht~dat$DH2_dg,
+        col=c("#F5E262","#6CCD58"),
+        main = "백내장진단유무별 신장분포",
+        xlab = "백내장 진단유무",
+        ylab = "신장")
+
+library(RColorBrewer)
+n <- c("관리자,전문가 및 관련 종사자",
+                              "사무종사자","서비스 및 판매 종사자",
+                              "농림어업 숙련 종사자",
+                              "기능원, 장치․기계조작 및 조립종사자",
+                              "단순노무종사자","무직(주부, 학생 등)")
+p <- brewer.pal(7,"Pastel1")
+occp_t <- table(dat$DH2_dg, dat$occp)
+#op <- round(prop.table(occp_t)*100,2)
+op0 <- round(prop.table(occp_t[1,])*100,2)
+op1 <- round(prop.table(occp_t[2,])*100,2)
+pie(occp_t[1,], radius = 1, clockwise = TRUE,
+    labels = paste(paste(paste(n,"\n"),op0),"%"),
+    main = "백내장진단(무) 직업분포",
+    col = p)
+pie(occp_t[2,], radius = 1, clockwise = TRUE,
+    labels = paste(paste(paste(n,"\n"),op1),"%"),
+    main = "백내장진단(유) 직업분포",
+    col = p)
+
+
+y <- c("아니오","예")
+HE_HPdg_t <- table(dat$DH2_dg, dat$HE_HPdg)
+hp0 <- round(prop.table(HE_HPdg_t[1,])*100,2)
+hp1 <- round(prop.table(HE_HPdg_t[2,])*100,2)
+pie(HE_HPdg_t[1,], radius = 1, clockwise = TRUE,
+    labels = paste(paste(paste(y,"\n"),hp0),"%"),
+    main = "백내장진단(무) 고혈압의사진단여부분포",
+    col = c("#f1948a","#fadbd8"))
+pie(HE_HPdg_t[2,], radius = 1, clockwise = TRUE,
+    labels = paste(paste(paste(y,"\n"),hp1),"%"),
+    main = "백내장진단(유) 고혈압의사진단여부분포",
+    col = c("#f1948a","#fadbd8"))
+
+HE_DMdg_t <- table(dat$DH2_dg, dat$HE_DMdg)
+dm0 <- round(prop.table(HE_DMdg_t[1,])*100,2)
+dm1 <- round(prop.table(HE_DMdg_t[2,])*100,2)
+pie(HE_DMdg_t[1,], radius = 1, clockwise = TRUE,
+    labels = paste(paste(paste(y,"\n"),dm0),"%"),
+    main = "백내장진단(무) 당뇨병의사진단여부분포",
+    col = c("#2980b9","#a9cce3"))
+pie(HE_DMdg_t[2,], radius = 1, clockwise = TRUE,
+    labels = paste(paste(paste(y,"\n"),dm1),"%"),
+    main = "백내장진단(유) 당뇨병의사진단여부분포",
+    col = c("#2980b9","#a9cce3"))
+
+DM4_dg_t <- table(dat$DH2_dg, dat$DM4_dg)
+d0 <- round(prop.table(DM4_dg_t[1,])*100,2)
+d1 <- round(prop.table(DM4_dg_t[2,])*100,2)
+pie(DM4_dg_t[1,], radius = 1, clockwise = TRUE,
+    labels = paste(paste(paste(y,"\n"),d0),"%"),
+    main = "백내장진단(무) 골다공증의사진단여부분포",
+    col = c("#27ae60","#a9dfbf"))
+pie(DM4_dg_t[2,], radius = 1, clockwise = TRUE,
+    labels =paste(paste(paste(y,"\n"),d1),"%"),
+    main = "백내장진단(유) 골다공증의사진단여부분포",
+    col = c("#27ae60","#a9dfbf"))
+```

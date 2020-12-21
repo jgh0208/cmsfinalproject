@@ -1,0 +1,65 @@
+---
+title: "datadistribution"
+author: "20173250 정경현"
+date: "2019년 5월 31일"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+dat <- read.csv("C:/Users/JGH0208/Desktop/20191/CMS/final/cmsfinal/data/dat2.csv")
+head(dat)
+dim(dat)
+dat <- dat[,2:24]
+sum(is.na(dat$HE_ht))/8150*100
+sum(is.na(dat$HE_wt))/8150*100
+sum(is.na(dat$HE_wc))/8150*100
+sum(is.na(dat$HE_chol))/8150*100
+sum(is.na(dat$HE_gul))/8150*100
+sum(is.na(dat$HE_fst))/8150*100
+sum(is.na(dat$HE_HPdg))/8150*100
+sum(is.na(dat$HE_HLfh1))/8150*100
+sum(is.na(dat$HE_BMI))/8150*100
+sum(is.na(dat$DI1_dg))/8150*100
+sum(is.na(dat$DI6_dg))/8150*100
+sum(is.na(dat$EC_occp))/8150*100
+sum(is.na(dat$DJ8_dg))/8150*100
+sum(is.na(dat$DJ4_dg))/8150*100
+sum(is.na(dat$BD1_11))/8150*100
+sum(is.na(dat$BD2_1))/8150*100
+sum(is.na(dat$BS3_1))/8150*100
+sum(is.na(dat$HE_DMdg))/8150*100
+sum(is.na(dat$DF2_dg))/8150*100
+dat <- data.frame(dat$sex,dat$age,dat$occp,dat$HE_ht,dat$HE_wt,dat$HE_wc,dat$HE_chol,dat$HE_glu,dat$HE_fst,dat$HE_HPdg,dat$HE_HLfh1,dat$HE_BMI,dat$DI1_dg,dat$DJ6_dg,dat$DJ8_dg,dat$DH4_dg,dat$HE_DMdg,dat$DF2_dg,dat$DH2_dg)
+head(dat)
+dat <- na.omit(dat)
+library(moonBook)
+mytable(dat.DH2_dg~., data = dat)
+
+
+fit <- glm(dat.DH2_dg~., data = dat, family = "binomial")
+summary(fit)
+fit2 <- step(fit)
+summary(fit2)
+fitfin <- glm(formula = dat.DH2_dg ~ dat.sex + dat.age + dat.HE_chol + 
+    dat.HE_fst + dat.DI1_dg + dat.DJ6_dg + dat.HE_DMdg + dat.DF2_dg, 
+    family = "binomial", data = dat)
+summary(fitfin)
+#install.packages("pROC")
+library(pROC)
+
+roc1 <- roc(DH2_dg~age, data = dat)
+plot(roc1)
+auc(roc1)
+ci(roc1)
+
+roc2 <- roc(DH2_dg~sex, data = dat)
+plot(roc2)
+auc(roc2)
+ci(roc2)
+```
